@@ -211,7 +211,9 @@ document.addEventListener("DOMContentLoaded", function () {
   }
   
   let slideIndex = 1;
-  showSlides(slideIndex);
+  if(slides && dots) {
+    showSlides(slideIndex);
+  }
   
   function plusSlides(n) {
     showSlides(slideIndex += n);
