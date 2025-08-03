@@ -96,8 +96,8 @@
     const grid = document.getElementById('buttonGrid');
     const numberOfButtons = 9;
     const maxTries = 3;
+    const correctIndex = 4; // Always button 5
     let tries = 0;
-    let correctIndex = Math.floor(Math.random() * numberOfButtons);
     let gameOver = false;
 
     for (let i = 0; i < numberOfButtons; i++) {
@@ -127,16 +127,4 @@
       }
     });
 
-    document.body.addEventListener('click', function (e) {
-      if (e.target.classList.contains('close')) {
-        const modalId = e.target.dataset.close;
-        document.getElementById(modalId).style.display = 'none';
-      }
-
-      if (e.target.classList.contains('modal')) {
-        e.target.style.display = 'none';
-      }
-    });
-  </script>
-</body>
-</html>
+    document.body.addEventListener('click', functi
