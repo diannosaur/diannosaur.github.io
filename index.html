@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Button Grid with Modals</title>
+  <title>Guess the Correct Button</title>
   <style>
     body {
       font-family: sans-serif;
@@ -52,6 +52,7 @@
       width: 90%;
       max-width: 400px;
       position: relative;
+      text-align: center;
     }
 
     .close {
@@ -70,58 +71,68 @@
   </style>
 </head>
 <body>
-  <h1>Grid of Buttons with Modals</h1>
-  <div class="grid" id="buttonGrid">
-    <!-- Buttons and modals will be injected here by JavaScript -->
+  <h1>Find the Correct Button</h1>
+  <p>You have 3 tries to find the correct button!</p>
+  <div class="grid" id="buttonGrid"></div>
+
+  <!-- Win/Lose Modals -->
+  <div class="modal" id="winModal">
+    <div class="modal-content">
+      <span class="close" data-close="winModal">&times;</span>
+      <h2>You Win!</h2>
+      <p>Nice work finding the correct button!</p>
+    </div>
+  </div>
+
+  <div class="modal" id="loseModal">
+    <div class="modal-content">
+      <span class="close" data-close="loseModal">&times;</span>
+      <h2>You Lose</h2>
+      <p>Out of tries. Better luck next time!</p>
+    </div>
   </div>
 
   <script>
     const grid = document.getElementById('buttonGrid');
     const numberOfButtons = 9;
+    const maxTries = 3;
+    let tries = 0;
+    let correctIndex = Math.floor(Math.random() * numberOfButtons);
+    let gameOver = false;
 
-    for (let i = 1; i <= numberOfButtons; i++) {
-      // Create button
+    for (let i = 0; i < numberOfButtons; i++) {
       const button = document.createElement('button');
-      button.textContent = `Open Modal ${i}`;
+      button.textContent = `Button ${i + 1}`;
       button.className = 'button';
-      button.dataset.modal = `modal${i}`;
-
-      // Create modal
-      const modal = document.createElement('div');
-      modal.className = 'modal';
-      modal.id = `modal${i}`;
-
-      const modalContent = document.createElement('div');
-      modalContent.className = 'modal-content';
-      modalContent.innerHTML = `
-        <span class="close" data-close="modal${i}">&times;</span>
-        <h2>Modal ${i}</h2>
-        <p>This is the content of modal ${i}.</p>
-      `;
-
-      modal.appendChild(modalContent);
-
-      // Add to DOM
+      button.dataset.index = i;
       grid.appendChild(button);
-      document.body.appendChild(modal);
     }
 
-    // Event delegation for open buttons
     grid.addEventListener('click', function (e) {
-      if (e.target.classList.contains('button')) {
-        const modalId = e.target.dataset.modal;
-        document.getElementById(modalId).style.display = 'block';
+      if (gameOver || !e.target.classList.contains('button')) return;
+
+      const index = parseInt(e.target.dataset.index);
+
+      if (index === correctIndex) {
+        document.getElementById('winModal').style.display = 'block';
+        gameOver = true;
+      } else {
+        tries++;
+        if (tries >= maxTries) {
+          document.getElementById('loseModal').style.display = 'block';
+          gameOver = true;
+        } else {
+          alert(`Wrong button! You have ${maxTries - tries} try(ies) left.`);
+        }
       }
     });
 
-    // Event delegation for close buttons
     document.body.addEventListener('click', function (e) {
       if (e.target.classList.contains('close')) {
         const modalId = e.target.dataset.close;
         document.getElementById(modalId).style.display = 'none';
       }
 
-      // Close modal if clicked outside modal content
       if (e.target.classList.contains('modal')) {
         e.target.style.display = 'none';
       }
